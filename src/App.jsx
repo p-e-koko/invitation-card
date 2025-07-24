@@ -1,36 +1,22 @@
 import React, { useState } from 'react';
 import './LunchInvitationForm.css';
-import { Mail, Send, Calendar, MapPin, Clock, Heart } from 'lucide-react';
+import { Mail, Send, Calendar, MapPin, Heart } from 'lucide-react';
 
 export default function LunchInvitation() {
   const [isOpen, setIsOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [responseData, setResponseData] = useState({
     guestName: '',
-    availability: '',
     preferredTime: '',
     foodAllergies: ''
   });
 
   const invitationData = {
     eventName: "Lunch Gathering",
-    date: "2025-08-2",
-    time: "13:00",
     location: "Farmito Arigato, Rabbit House 333",
     hostName: "Teresa & Pann",
-    description: "I'd love to have lunch with you! Just a cozy get-together — nothing fancy."
-  };
-
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-    });
-  };
-
-  const formatTime = (timeString) => {
-    return new Date(`2000-01-01T${timeString}`).toLocaleTimeString('en-US', {
-      hour: 'numeric', minute: '2-digit', hour12: true
-    });
+    description:
+      "I'd love to have lunch with you! Just a cozy get-together — nothing fancy. Preferably on any Saturday or Sunday."
   };
 
   const handleChange = (e) => {
@@ -42,10 +28,11 @@ export default function LunchInvitation() {
       alert('Please enter your name.');
       return;
     }
-    if (!responseData.availability) {
-      alert('Please indicate your availability.');
+    if (!responseData.preferredTime) {
+      alert('Please choose a preferred date and time.');
       return;
     }
+
     const stored = JSON.parse(localStorage.getItem('lunchResponses') || '[]');
     stored.push(responseData);
     localStorage.setItem('lunchResponses', JSON.stringify(stored));
@@ -56,9 +43,10 @@ export default function LunchInvitation() {
     <div className="container">
       <div className="card-wrapper">
         <div className="invitation-card">
-          <div 
-            className={`envelope ${isOpen ? 'open' : ''}`} 
-            onClick={() => setIsOpen(!isOpen)}>
+          <div
+            className={`envelope ${isOpen ? 'open' : ''}`}
+            onClick={() => setIsOpen(!isOpen)}
+          >
             <div className="envelope-hover" />
             <div className="envelope-icon">
               <Mail size={32} />
@@ -73,8 +61,7 @@ export default function LunchInvitation() {
               <h1>Lunch Invitation</h1>
               <p className="event-name">{invitationData.eventName}</p>
               <div className="event-info">
-                <p><Calendar size={16} /> {formatDate(invitationData.date)}</p>
-                <p><Clock size={16} /> {formatTime(invitationData.time)}</p>
+                <p><Calendar size={16} /> Any Saturday or Sunday</p>
                 <p><MapPin size={16} /> {invitationData.location}</p>
               </div>
               <p className="description">{invitationData.description}</p>
@@ -88,36 +75,14 @@ export default function LunchInvitation() {
                 onChange={handleChange}
               />
 
-              <label>Are you available at the scheduled time?</label>
-              <div className="radio-group">
-                <label>
-                  <input
-                    type="radio"
-                    name="availability"
-                    value="available"
-                    checked={responseData.availability === 'available'}
-                    onChange={handleChange}
-                  /> Yes
-                </label>
-                <label>
-                  <input
-                    type="radio"
-                    name="availability"
-                    value="not-available"
-                    checked={responseData.availability === 'not-available'}
-                    onChange={handleChange}
-                  /> No
-                </label>
-              </div>
-
-              {responseData.availability === 'not-available' && (
-                <input
-                  name="preferredTime"
-                  placeholder="When would work better?"
-                  value={responseData.preferredTime}
-                  onChange={handleChange}
-                />
-              )}
+              <label>Preferred Date & Time</label>
+              <input
+                type="datetime-local"
+                name="preferredTime"
+                value={responseData.preferredTime}
+                onChange={handleChange}
+              />
+              <small>Please choose a Saturday or Sunday if possible.</small>
 
               <textarea
                 name="foodAllergies"
@@ -133,7 +98,9 @@ export default function LunchInvitation() {
           </div>
         </div>
 
-        {!isOpen && <p className="click-hint">Click the envelope to open your invitation</p>}
+        {!isOpen && (
+          <p className="click-hint">Click the envelope to open your invitation</p>
+        )}
       </div>
 
       {/* Popup Modal */}
