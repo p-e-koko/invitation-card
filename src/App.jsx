@@ -82,7 +82,6 @@ export default function LunchInvitation() {
                 value={responseData.preferredTime}
                 onChange={handleChange}
               />
-              <small>Please choose a Saturday or Sunday if possible.</small>
 
               <textarea
                 name="foodAllergies"
