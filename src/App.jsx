@@ -4,6 +4,7 @@ import { Mail, Send, Calendar, MapPin, Clock, Heart } from 'lucide-react';
 
 export default function LunchInvitation() {
   const [isOpen, setIsOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [responseData, setResponseData] = useState({
     guestName: '',
     availability: '',
@@ -48,7 +49,7 @@ export default function LunchInvitation() {
     const stored = JSON.parse(localStorage.getItem('lunchResponses') || '[]');
     stored.push(responseData);
     localStorage.setItem('lunchResponses', JSON.stringify(stored));
-    alert('Thanks for your response!');
+    setShowModal(true);
   };
 
   return (
@@ -134,6 +135,16 @@ export default function LunchInvitation() {
 
         {!isOpen && <p className="click-hint">Click the envelope to open your invitation</p>}
       </div>
+
+      {/* Popup Modal */}
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <h2>Thank you for submitting! 🎉</h2>
+            <button onClick={() => setShowModal(false)}>Close</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
